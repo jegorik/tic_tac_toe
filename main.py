@@ -1,8 +1,14 @@
 import random
 
+board = []
+players = []
+marker = ''
+
 
 def create_board():
-    return [' '] * 10
+    board = [' '] * 10
+    board[0] = '#'
+    return board
 
 
 def show_board():
@@ -96,21 +102,32 @@ def change_player(marker):
         return 'X'
 
 
+def board_have_place(board):
+    if ' ' in board:
+        return False
+    else:
+        return True
+
+
+def new_game():
+    global board, players, marker
+    board = create_board()
+    players = choose_marker()
+    marker = players[first_turn()]
+    print(marker, 'goes first')
+
+
 game = start_game()
-turn = 0
-board = create_board()
-players = choose_marker()
-marker = players[first_turn()]
-print(marker, 'goes first')
+if game:
+    new_game()
 
 while game:
     print(marker, ' Turn')
     cell_number = read_user_input()
     update_board(cell_number, marker)
     show_board()
-    turn += 1
-    if win_check(board, marker) or turn == 9:
-        if turn == 9:
+    if win_check(board, marker) or board_have_place(board):
+        if board_have_place(board):
             print('TIE!')
         else:
             print(marker, 'WIN!')
@@ -118,11 +135,7 @@ while game:
         if game is not True:
             break
         else:
-            turn = 0
-        board = create_board()
-        players = choose_marker()
-        marker = players[first_turn()]
-        print(marker, 'goes first')
-        show_board()
+            new_game()
+            show_board()
     else:
         marker = change_player(marker)
